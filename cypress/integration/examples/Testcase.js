@@ -12,21 +12,38 @@ describe('Test suite', ()=>{
 
         //Ecommerce product e2e Validation
         cy.contains('Shop').click()
-        cy.selectProduct('Samsung Note 8')
+        const products = ["Samsung Note 8", "Blackberry"]
+        products.forEach(function(element){
+            cy.selectProduct(element)
+        });
         cy.contains('Checkout').click()
-        cy.get('.media-heading:nth-child(1)').should('have.text', 'Samsung Note 8')
-        cy.contains('Checkout').click()
-        cy.get('#country').type('ind')
-        cy.get('.suggestions ul li  a', {timeout: 8000}).each((element, index, list)=>{
-            if(element.text().includes('Indonesia')){
-                cy.get(element).eq(index).click()
-            
-            }
+        var sum = 0;
+        cy.get('tbody tr td:nth-child(4) strong').each((element, index, list)=>{
+            const amountText = element.text()
+            var res = amountText.split(" ")
+            res = res[1].trim()
+            sum = Number(sum) + Number(res)
+        }).then(function(){
+            cy.log(sum)
+        })
+        cy.get('h3 strong').each((element, index, list)=>{
+            const amountText = element.text()
+            var res = amountText.split(" ")
+            var total = res[1].trim()
+            expect(Number(total)).to.equal(sum)
         })
 
-
         
+        //cy.get('.media-heading:nth-child(1)').should('have.text', 'Samsung Note 8')
+        cy.contains('Checkout').click()
+        cy.get('#country').type('india')
+        cy.get('.suggestions ul li  a', {timeout: 8000}).click()
+        cy.get('#checkbox2').click({ force: true })
+        cy.get('input[type="submit"]').click()
+        cy.get('.alert').then(function(element){
+            const actualText = element.text()
+            expect(actualText.includes('Success')).to.be.true
+        })
 
-
+        })
     })
-})
