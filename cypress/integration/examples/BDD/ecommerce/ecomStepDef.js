@@ -1,4 +1,4 @@
-import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When, Then, DataTable } from "@badeball/cypress-cucumber-preprocessor";
 import CheckOutPage from "../../../../support/pageObject/CheckOutPage"
 import HomePage from "../../../../support/pageObject/Homepage"
 import ShopPage from "../../../../support/pageObject/ShopPage"
@@ -53,9 +53,11 @@ Then('select the countery and verify the end message', () => {
     })
 })
 
-When('I fill the form', function () {
-    homepage.enterName().type(this.data.name)
-    homepage.enterEmail().type('email@gamil.com')
+When('I fill the form', function (dataTable) {
+    // homepage.enterName().type(this.data.name)
+    // homepage.enterEmail().type(this.data.email)
+    homepage.enterName().type(dataTable.rawTable[1][0])
+    homepage.enterEmail().type(dataTable.rawTable[1][1])
     homepage.checkbox().should('not.be.checked')
     homepage.checkbox().check().should('be.checked')
     homepage.genderSelection().select('Female')
