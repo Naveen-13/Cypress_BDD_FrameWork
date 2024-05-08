@@ -19,6 +19,17 @@ Cypress.Commands.add('selectProduct', (productName) => {
     })
  })
 
+ Cypress.Commands.add('getPriceValue', (locator)=>{
+    var sum = 0;
+    cy.get(locator).each((element, index, list)=>{
+        const amountText = element.text()
+        var res = amountText.split(" ")
+        res = res[1].trim()
+        sum = Number(sum) + Number(res)
+    })
+    return sum;
+ })
+
 //
 //
 // -- This is a child command --
